@@ -1,0 +1,93 @@
+//here is a solution which is very impressive but not understandable.
+//So I change codes according to my understanding.
+
+
+
+
+//========================================================
+// https://leetcode.com/problems/house-robber-ii/discuss/60044/Good-performance-DP-solution-using-Java
+//========================================================
+
+public int rob(int[] nums) {
+    if (nums.length == 0)
+        return 0;
+    if (nums.length < 2)
+        return nums[0];
+
+    int[] startFromFirstHouse = new int[nums.length + 1];
+    int[] startFromSecondHouse = new int[nums.length + 1];
+
+    startFromFirstHouse[0]  = 0;
+    startFromFirstHouse[1]  = nums[0];
+    startFromSecondHouse[0] = 0;
+    startFromSecondHouse[1] = 0;
+
+    for (int i = 2; i <= nums.length; i++) {
+        startFromFirstHouse[i] = Math.max(startFromFirstHouse[i - 1], startFromFirstHouse[i - 2] + nums[i-1]);
+        startFromSecondHouse[i] = Math.max(startFromSecondHouse[i - 1], startFromSecondHouse[i - 2] + nums[i-1]);
+    }
+
+    return Math.max(startFromFirstHouse[nums.length - 1], startFromSecondHouse[nums.length]);
+}
+
+
+//========================================================
+// my understanding
+//========================================================
+public static int rob(int[] nums) {
+    int len = nums.length;
+    if (len == 0)
+        return 0;
+    if (len < 2)
+        return nums[0];
+
+    int[] startFromFirstHouse = new int[len];
+    int[] startFromSecondHouse = new int[len];
+
+    startFromFirstHouse[0] = nums[0];
+    startFromFirstHouse[1] = Math.max(nums[0], nums[1]);
+
+    startFromSecondHouse[0] = 0;
+    startFromSecondHouse[1] = nums[1];
+
+    for (int i = 2; i < len - 1; i++) {
+        startFromFirstHouse[i] = Math.max(startFromFirstHouse[i - 1], startFromFirstHouse[i - 2] + nums[i]);
+    }
+    for (int i = 2; i < len; i++) {
+        startFromSecondHouse[i] = Math.max(startFromSecondHouse[i - 1], startFromSecondHouse[i - 2] + nums[i]);
+    }
+//        System.out.println(Arrays.toString(startFromFirstHouse));
+//        System.out.println(Arrays.toString(startFromSecondHouse));
+
+    return Math.max(startFromFirstHouse[len - 2], startFromSecondHouse[len - 1]);
+}
+
+
+
+
+//========================================================
+// my wrong solution
+//========================================================
+public int rob(int[] nums) {
+    int len = nums.length;
+    if (len == 0) return 0;
+    if (len == 1) return nums[0];
+    if (len == 2) return Math.max(nums[0], nums[1]);
+
+
+    int[] reverse = new int[len];
+    for (int i = 0; i < len; i++) {
+        reverse[i] = nums[len - 1 - i];
+    }
+
+    int[] dp = new int[len - 1];
+    int[] revDp = new int[len - 1];
+    dp[0] = nums[0]; dp[1] = Math.max(nums[0], nums[1]);
+    revDp[0] = reverse[0]; revDp[1] = Math.max(reverse[0], reverse[1]);
+
+    for (int i = 2; i < len - 1; i++) {
+        dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        revDp[i] = Math.max(reverse[i - 1], revDp[i - 2] + reverse[i]);
+    }
+    return Math.max(dp[len - 2], revDp[len - 2]);
+}
