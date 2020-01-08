@@ -16,7 +16,7 @@ Termination condition: when do we know the answer to rob(root) without any calcu
 Recurrence relation: i.e., how to get rob(root) from rob(root.left), rob(root.right), ... etc. From the point of view of the tree root, there are only two scenarios at the end: root is robbed or is not. If it is, due to the constraint that "we cannot rob any two directly-linked houses", the next level of subtrees that are available would be the four "grandchild-subtrees" (root.left.left, root.left.right, root.right.left, root.right.right). However if root is not robbed, the next level of available subtrees would just be the two "child-subtrees" (root.left, root.right). We only need to choose the scenario which yields the larger amount of money.
 
 Here is the program for the ideas above:
-
+```
 public int rob(TreeNode root) {
     if (root == null) return 0;
     
@@ -32,6 +32,7 @@ public int rob(TreeNode root) {
     
     return Math.max(val + root.val, rob(root.left) + rob(root.right));
 }
+```
 However the solution runs very slowly (1186 ms) and barely got accepted (the time complexity turns out to be exponential, see my comments below).
 
 Step II -- Think one step further
