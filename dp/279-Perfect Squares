@@ -1,0 +1,133 @@
+/**
+*
+1ms的解法属于奇技淫巧，可以不考虑
+重点看第二种和最后一种，为什么差不多的思路，运行时间相差很多？
+*/
+//=============================================================================	
+//1ms
+//=============================================================================	
+
+public int numSquares(int n) {
+	while (n % 4 == 0)
+		n /= 4;
+	if (n % 8 == 7)
+		return 4;
+	
+	if (isSqrt(n))
+		return 1;
+	for (int i = 1; i * i <= n; i++){
+		if (isSqrt(n-i*i))
+			return 2;
+	}
+	
+	return 3;
+}
+
+public boolean isSqrt(int n){
+	int sq = (int) Math.sqrt(n);
+	return n == sq * sq;
+}
+
+//=============================================================================	
+//2ms
+//=============================================================================	
+
+
+static List<Integer> result = new ArrayList<>();
+public int numSquares(int n) {
+	if (result.size() == 0) {
+		result.add(0);
+	}
+	
+	while (result.size() <= n) {
+		int m = result.size();
+		int tempMin = Integer.MAX_VALUE;
+		for (int j = 1; j * j <= m; j++) {
+			tempMin = Math.min(tempMin, result.get(m - j * j) + 1);
+		}
+		result.add(tempMin);
+	}
+	return result.get(n);
+}
+//=============================================================================	
+// 3ms
+//=============================================================================	
+
+static int dp[] = new int[10000];
+static int f = 0,s=10000;
+public int numSquares(int n) {
+	if(n<=3)return n;
+	//check if n has been already computed or not
+	if(f==1 && n<=s)return dp[n];
+	else{
+		//if n>s recreate array and mark it as new max range
+		s = Math.max(s,n+1);
+		dp = new int[s];
+		f = 1;
+	}
+	dp[0] = 0;dp[1]=1;dp[2] = 2;dp[3] = 3;
+	for(int i=4;i<s;i++){
+		int p = (int)Math.floor(Math.sqrt(i));
+		int mv=dp[i-(p*p)];
+		for(int j = p-1;j>0;j--){
+			mv = Math.min(mv,dp[i-j*j]);
+		}
+		dp[i]=mv+1;
+		//System.out.println(i+" "+dp[i]);
+	}
+	return dp[n];
+
+}
+
+//=============================================================================	
+// 5ms
+//=============================================================================	
+public int numSquares(int n) {
+	
+	// Array of all square numbers < n
+	int sqNumSize = (int)Math.sqrt(n) + 1;
+	int[] squares = new int[sqNumSize];
+
+	for(int i = 0; i < sqNumSize; i++) {
+		squares[i] = i*i;
+	}
+	// System.out.println(Arrays.toString(squares));
+	
+	for(int count = 1; count <= n; count++) {
+		if(isDivisibleRec(n, count, squares))
+			return count;
+	}
+	
+	return 0;
+}
+
+private static boolean isDivisibleRec(int sum, int count, int[] squares) {
+	// Base case, when count = 1
+	if(count == 1) {
+		return Arrays.binarySearch(squares, sum) >= 0;
+	}
+	// Recursive case, when count is more
+	else {
+		for(int sqNum : squares) {
+			if(isDivisibleRec(sum - sqNum, count - 1, squares))
+				return true;
+		}
+	}
+	return false;
+}
+
+//=============================================================================	
+// 18~30ms
+//=============================================================================	
+public int numSquares(int n) {
+	int[] dp = new int[n+1];
+	Arrays.fill(dp, n+1);
+	dp[0] = 0;
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j*j <= i; j++) {
+			dp[i] = Math.min(dp[i], dp[i-j*j] + 1);
+		}
+	}
+	return dp[n];
+	
+}
