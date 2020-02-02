@@ -1,0 +1,35 @@
+
+
+public boolean canCross(int[] stones) {
+  HashMap<Integer, Set<Integer>> map = new HashMap<>();
+    for (int i = 0; i < stones.length; i++) {
+        map.put(stones[i], new HashSet<Integer>());
+    }
+    map.get(0).add(0);
+    for (int i = 0; i < stones.length; i++) {
+        for (int k : map.get(stones[i])) {
+            for (int step = k - 1; step <= k + 1; step++) {
+                if (step > 0 && map.containsKey(stones[i] + step)) {
+                    map.get(stones[i] + step).add(step);
+                }
+            }
+        }
+    }
+    return map.get(stones[stones.length - 1]).size() > 0;
+}
+
+
+//==============================================================
+public boolean canCross(int[] stones) {
+    for(int i=1;i<stones.length;i++)
+        if(stones[i]>stones[i-1]+i)
+            return false;
+    return dfs(stones,0,1);
+}
+public boolean dfs(int[] stones,int index,int v){
+    if(index<0 || v<1)
+        return false;
+    return index==stones.length-1||(index>0 && dfs(stones,Arrays.binarySearch(stones,stones[index]+v+1),v+1)) ||
+        dfs(stones,Arrays.binarySearch(stones,stones[index]+v),v) ||
+        dfs(stones,Arrays.binarySearch(stones,stones[index]+v-1),v-1);
+}
